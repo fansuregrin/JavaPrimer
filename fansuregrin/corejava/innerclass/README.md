@@ -357,6 +357,62 @@ class fansuregrin.corejava.innerclass.TalkingClock3$1 implements java.awt.event.
 
 ## 静态嵌套类（Static Nested Classes）
 
+当一个嵌套类不需要对外围类对象的引用时，就可以定义为静态嵌套类。
+
+例如，[StaticInnerClassTest](./StaticInnerClassTest.java) 所示：
+```java
+public class StaticInnerClassTest {
+    public static void main(String[] args) {
+        double[] arr = new double[10];
+        for (int i=0; i<arr.length; ++i) {
+            arr[i] = Math.random() * 100;
+        }
+        System.out.println("arr: " + Arrays.toString(arr));
+        ArrayAlg.Pair minMax = ArrayAlg.minmax(arr);
+        System.out.println("min value of arr: " + minMax.getFirst());
+        System.out.println("max value of arr: " + minMax.getSecond());
+    }
+}
+
+class ArrayAlg {
+    public static class Pair {
+        private double first;
+        private double second;
+
+        public Pair(double first, double second) {
+            this.first = first;
+            this.second = second;
+        }
+
+        public double getFirst() { return first; }
+        public double getSecond() { return second; }
+    }
+
+    public static Pair minmax(double[] arr) {
+        double min = Double.POSITIVE_INFINITY;
+        double max = Double.NEGATIVE_INFINITY;
+        for (double x : arr) {
+            if (x < min) min = x;
+            if (x > max) max = x;
+        }
+        return new Pair(min, max);
+    }
+}
+```
+`Pair` 是 `ArrayAlg` 中的一个静态嵌套类。
+与非静态的嵌套类相比，它没有对外围类（即 `ArrayAlg`）的对象的引用，所以可以在静态方法 `minmax` 中使用。
+
+编译器将 `Pair` 编译成 `ArrayAlg$Pair.class`。
+使用 `javap` 查看：
+```
+Compiled from "StaticInnerClassTest.java"
+public class fansuregrin.corejava.innerclass.ArrayAlg$Pair {
+  public fansuregrin.corejava.innerclass.ArrayAlg$Pair(double, double);
+  public double getFirst();
+  public double getSecond();
+}
+```
+
 # 参考
 - Core Java Volume 1 - 6.3 Inner Classes
 - [The Java™ Tutorials - Nested Classes](https://docs.oracle.com/javase/tutorial/java/javaOO/nested.html)
