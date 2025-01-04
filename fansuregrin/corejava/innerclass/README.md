@@ -248,6 +248,60 @@ JVM 会利用这两个属性，来判断嵌套关系，从而允许内部类对�
 在方法 `actionPerformed` 中，直接通过 `22: getfield #41` 获取 `beep`。
 
 ### 局部内部类（Local Inner Classes）
+局部类是在块中定义的类，块是一组在括号之间包含零个或多个的语句。
+局部类通常会出现在方法中，它对外完全隐藏。
+与其他内部类相比，局部类不仅能访问外部类的字段，还可以访问局部变量。
+这些局部变量必须是事实最终变量（effectively final）。
+
+[LocalInnerClassTest](./LocalInnerClassTest.java) ：
+```java
+public class LocalInnerClassTest {
+    public static void main(String[] args) {
+        TalkingClock2 clock = new TalkingClock2();
+        clock.start(2000, true);
+
+        JOptionPane.showMessageDialog(null, "Quit program?");
+        System.exit(0);
+    }
+}
+
+class TalkingClock2 {
+    public void start(int interval, boolean beep) {
+        class TimePrinter implements ActionListener {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("At the tone, the time is "
+                    + Instant.ofEpochMilli(e.getWhen()));
+                if (beep) Toolkit.getDefaultToolkit().beep();
+            }
+        }
+
+        TimePrinter listener = new TimePrinter();
+        Timer timer = new Timer(interval, listener);
+        timer.start();
+    }
+}
+```
+`TimePrinter` 是一个位于方法 `TalkingClock2.start(int, boolean)` 中的局部类，
+它能够访问局部变量 `beep`。
+这里有个疑问，方法 `TimePrinter.actionPerformed(ActionEvent)` 在 `timer.start()` 之后执行，
+此时，局部变量 `beep` 已经没有了，`actionPerformed` 中对 `beep` 的访问是否有效？
+答案是，对 `beep` 的访问仍然有效。
+编译器在编译局部类 `TimePrinter` 时，给其添加了一个字段，并用局部变量 `beep` 初始化这个字段。
+
+编译器编译后，局部类 `TimePrinter` 被编译成 `TalkingClock2$1TimePrinter.class`。
+使用 `javap` 反编译查看：
+```
+Compiled from "LocalInnerClassTest.java"
+class fansuregrin.corejava.innerclass.TalkingClock2$1TimePrinter implements java.awt.event.ActionListener {
+  final boolean val$beep;
+  final fansuregrin.corejava.innerclass.TalkingClock2 this$0;
+  fansuregrin.corejava.innerclass.TalkingClock2$1TimePrinter();
+  public void actionPerformed(java.awt.event.ActionEvent);
+}
+```
+字段 `val$beep` 保存局部变量 `beep`，`this$0` 引用外部类的对象。
+
 ### 匿名内部类（Anonymous Inner Classes）
 
 ## 静态嵌套类（Static Nested Classes）
