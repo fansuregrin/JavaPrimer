@@ -303,6 +303,57 @@ class fansuregrin.corejava.innerclass.TalkingClock2$1TimePrinter implements java
 字段 `val$beep` 保存局部变量 `beep`，`this$0` 引用外部类的对象。
 
 ### 匿名内部类（Anonymous Inner Classes）
+当不需要显示定义一个类时，可以进一步省略类名，定义一个匿名内部类。
+具体语法如下：
+```
+new SuperClass(construction paramters) {
+    inner class methods and data
+}
+
+or
+
+new InterfaceType() {
+    methods and data
+}
+```
+匿名内部类没有类名，所以不能有构造器，但是可以有对象初始化块。
+
+[AnonymousInnerClass](./AnonymousInnerClassTest.java)：
+```java
+public class AnonymousInnerClassTest {
+    public static void main(String[] args) {
+        new TalkingClock3().start(2000, true);
+        
+        JOptionPane.showMessageDialog(null, "Quit program?");
+        System.exit(0);
+    }
+}
+
+class TalkingClock3 {
+    public void start(int interval, boolean beep) {
+        new Timer(interval, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("At the tone, the time is "
+                    + Instant.ofEpochMilli(e.getWhen()));
+                if (beep) Toolkit.getDefaultToolkit().beep();
+            }
+        }).start();
+    }
+}
+```
+`start(int,boolean)` 方法中定义了一个匿名内部类，它实现了接口 `ActionListener`。
+编译器会将这个匿名内部类编译成 `TalkingClock3$1.class`：
+```
+Compiled from "AnonymousInnerClassTest.java"
+class fansuregrin.corejava.innerclass.TalkingClock3$1 implements java.awt.event.ActionListener {
+  final boolean val$beep;
+  final fansuregrin.corejava.innerclass.TalkingClock3 this$0;
+  fansuregrin.corejava.innerclass.TalkingClock3$1();
+  public void actionPerformed(java.awt.event.ActionEvent);
+}
+```
+其中的字段和方法与局部类类似。
 
 ## 静态嵌套类（Static Nested Classes）
 
