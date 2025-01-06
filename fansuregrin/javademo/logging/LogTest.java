@@ -29,6 +29,11 @@ public class LogTest {
         // - FINER
         // - FINEST
         myLogger.setLevel(Level.FINE);
+        // why? see `Logger.log(LogRecord record)`.
+        // myLogger has no handler, but its parent logger has a ConsoleHandler,
+        // so this log record will be pubished to that ConsoleHandler.
+        // However, the ConsoleHandler's log level is 'INFO', 
+        // so this log message won't be output to the console.
         myLogger.fine("ok"); // no effective
         myLogger.log(Level.INFO, "123");
 
