@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.logging.FileHandler;
-import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -71,6 +70,9 @@ public class LogTest {
         // "%g" the generation number to distinguish rotated logs
         // "%u" a unique number to resolve conflicts
         // "%%" translates to a single percent sign "%"
+
+        // rotated logs
+        myLogger.addHandler(new FileHandler("%h/logtest%g.log", 0, 10));
     }
 
     public static int read(String file, byte[] buf) throws IOException {
