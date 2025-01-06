@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Locale;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -54,6 +56,21 @@ public class LogTest {
         Locale.setDefault(Locale.CHINA);
         localeLogger.log(Level.INFO, "readFile", "a.txt");
         localeLogger.log(Level.INFO, "renameFile", new Object[] {"a.txt", "b.txt"});
+
+        // add handler
+        myLogger.setUseParentHandlers(false);
+        myLogger.addHandler(new FileHandler());
+        myLogger.fine("hello");
+        // log messages will be flushed into a log file
+        // default filename pattern of the log file: %h/java%u.log
+        // A pattern consists of a string that includes the following special
+        // components that will be replaced at runtime:
+        // "/" the local pathname separator
+        // "%t" the system temporary directory
+        // "%h" the value of the "user.home" system property
+        // "%g" the generation number to distinguish rotated logs
+        // "%u" a unique number to resolve conflicts
+        // "%%" translates to a single percent sign "%"
     }
 
     public static int read(String file, byte[] buf) throws IOException {
