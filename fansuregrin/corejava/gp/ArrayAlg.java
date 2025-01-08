@@ -12,7 +12,7 @@ public class ArrayAlg {
         return new Pair<>(min, max);
     }
 
-    public static <T extends Comparable<T>> Pair<T> minmax2(T[] a) {
+    public static <T extends Comparable<? super T>> Pair<T> minmax2(T[] a) {
         if (a == null || a.length == 0) return null;
         T min = a[0];
         T max = a[0];
