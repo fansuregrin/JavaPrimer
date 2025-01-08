@@ -57,6 +57,9 @@ public class GPTest {
         printBuddies(managerBuddies);
         Pair<? extends Employee> employeeBuddies3 = managerBuddies; // ok
         // employeeBuddies3.setFirst(lowlyEmployee); // error
+
+        // 无限定通配符
+        System.out.println("mm has nulls: " + Pairs.hasNulls(mm));
     }
 
     public static void printBuddies(Pair<? extends Employee> p) {
