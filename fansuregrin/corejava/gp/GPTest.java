@@ -42,7 +42,9 @@ public class GPTest {
 
         // Manager 和 Employee 由继承关系，但是 Pair<Manager> 没有 Pair<Employee> 没有关系
         Manager ceo = new Manager("Mike Albert", 80000, 2010, 10, 10);
+        ceo.setBonus(4000);
         Manager cfo = new Manager("Lux Liu", 80000, 2010, 10, 10);
+        cfo.setBonus(3500);
         Pair<Manager> managerBuddies = new Pair<>(ceo, cfo);
         // Type mismatch: cannot convert from Pair<Manager> to Pair<Employee>
         // Pair<Employee> employeeBuddies = managerBuddies; // error
@@ -60,6 +62,15 @@ public class GPTest {
 
         // 无限定通配符
         System.out.println("mm has nulls: " + Pairs.hasNulls(mm));
+
+        // 通配符捕获
+        Pair<Manager> result = new Pair<>();
+        minmaxBonus(managerBuddies2, result);
+        System.out.println("first: " + result.getFirst().getName() + 
+            ", second: " + result.getSecond().getName());
+        maxminBonus(managerBuddies2, result);
+        System.out.println("first: " + result.getFirst().getName() + 
+            ", second: " + result.getSecond().getName());
     }
 
     public static void printBuddies(Pair<? extends Employee> p) {
@@ -79,5 +90,10 @@ public class GPTest {
         }
         result.setFirst(min);
         result.setSecond(max);
+    }
+
+    public static void maxminBonus(Manager[] managers, Pair<? super Manager> result) {
+        minmaxBonus(managers, result);
+        Pairs.swapHelper(result);
     }
 }
